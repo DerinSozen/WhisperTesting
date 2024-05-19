@@ -20,5 +20,4 @@ To run the testing script, use the following command:
 ```bash
 python test_whisper.py <model_type> <audio_file> <transcription_file>
 
-```bash
 python test_faster_whisper.py <model_type> <audio_file> <transcription_file>
