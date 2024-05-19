@@ -8,6 +8,8 @@ python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 
+export KMP_DUPLICATE_LIB_OK=TRUE
+
 python3 test_faster_whisper.py "tiny.en" $AUDIO_FILE $TRANSCRIPT_FILE
 python3 test_faster_whisper.py "tiny" $AUDIO_FILE $TRANSCRIPT_FILE
 python3 test_faster_whisper.py "base.en" $AUDIO_FILE $TRANSCRIPT_FILE
