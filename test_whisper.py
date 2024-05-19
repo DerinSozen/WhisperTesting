@@ -3,6 +3,7 @@ import whisper
 import time
 from mutagen.mp3 import MP3, HeaderNotFoundError
 from mutagen.wave import WAVE
+import torch
 import os
 import sys
 
@@ -18,9 +19,15 @@ for arg in sys.argv[2:]:
         sys.exit(1)
 
 #User parameters to aid in testing
-model_type = sys.argv[1]
+model_size = sys.argv[1]
 audio_file = sys.argv[2]
 transcription_file = sys.argv[3]
+
+#check cuda availability using torch and set device accordingly
+if torch.cuda.is_available():
+    device = "cuda"
+else:
+    device = "cpu"
 
 # Use mutagen to get the length of the audio file and free object after finishing
 try:
@@ -34,12 +41,17 @@ except HeaderNotFoundError:
 
 # Load the model and measure the time taken
 loading_start = time.process_time()
-model = whisper.load_model(model_type)
+
+if device == "cuda":
+    model = whisper.load_model(model_size, device="cuda")
+else:
+    model = whisper.load_model(model_size)
+    
 loading_time = time.process_time() - loading_start
 
 # Transcribe the audio file and measure the time taken
 transcribing_start = time.process_time()
-result = model.transcribe(audio_file)
+result = model.transcribe(audio_file, fp16=False)
 transcribing_time = time.process_time() - transcribing_start
 predicted = result["text"]
 
@@ -68,4 +80,4 @@ tversky = td.Tversky(ks=(0.2, 0.8))
 Tversky = tversky(transcript,predicted)
 
 # Print the resulting statistics from the test
-print("Model: Whisper-"+model_type+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)
+print("Model: Whisper-"+model_size+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)

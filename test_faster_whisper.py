@@ -19,7 +19,7 @@ for arg in sys.argv[2:]:
         sys.exit(1)
 
 #User parameters to aid in testing
-model_type = sys.argv[1]
+model_size = sys.argv[1]
 audio_file = sys.argv[2]
 transcription_file = sys.argv[3]
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -36,7 +36,7 @@ except HeaderNotFoundError:
 
 # Load the model and measure the time taken
 loading_start = time.process_time()
-model = WhisperModel(model_type,device = device,compute_type = "int8")
+model = WhisperModel(model_size,device = device,compute_type = "int8")
 loading_time = time.process_time() - loading_start
 
 # Transcribe the audio file and measure the time taken
@@ -72,4 +72,4 @@ tversky = td.Tversky(ks=(0.2, 0.8))
 Tversky = tversky(transcript,predicted)
 
 # Print the resulting statistics from the test
-print("Model: Whisper-"+model_type+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)
+print("Model: Whisper-"+model_size+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)

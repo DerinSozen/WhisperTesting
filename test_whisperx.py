@@ -20,7 +20,7 @@ for arg in sys.argv[2:]:
         sys.exit(1)
 
 #User parameters to aid in testing
-model_type = sys.argv[1]
+model_size = sys.argv[1]
 audio_file = sys.argv[2]
 transcription_file = sys.argv[3]
 batch_size = 4
@@ -40,12 +40,12 @@ except HeaderNotFoundError:
 
 # Load the model and measure the time taken
 loading_start = time.process_time()
-model = whisperx.load_model(model_type, device, compute_type=compute_type)
+model = whisperx.load_model(model_size, device, compute_type=compute_type)
 loading_time = time.process_time() - loading_start
 
 # save model to local path (optional)
-# model_dir = "whisperx_cache/"+model_type
-# model = whisperx.load_model(model_type, device, compute_type=compute_type, download_root=model_dir)
+# model_dir = "whisperx_cache/"+model_size
+# model = whisperx.load_model(model_size, device, compute_type=compute_type, download_root=model_dir)
 
 # Transcribe the audio file and measure the time taken
 transcribing_start = time.process_time()
@@ -81,4 +81,4 @@ tversky = td.Tversky(ks=(0.2, 0.8))
 Tversky = tversky(transcript,predicted)
 
 # Print the resulting statistics from the test
-print("Model: Whisper-"+model_type+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)
+print("Model: Whisper-"+model_size+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)
