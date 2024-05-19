@@ -1,5 +1,6 @@
 #!/bin/bash  
 
+# Edit audio file and Transcript for all test cases here
 AUDIO_FILE="sample_audio/jfk.wav"
 TRANSCRIPT_FILE="sample_transcripts/jfk-transcript.txt"
 
