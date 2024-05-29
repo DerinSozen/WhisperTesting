@@ -1,4 +1,4 @@
-import textdistance as td
+import jiwer
 from faster_whisper import WhisperModel
 import time
 from mutagen.mp3 import MP3, HeaderNotFoundError
@@ -21,7 +21,7 @@ for arg in sys.argv[2:]:
 #User parameters to aid in testing
 model_size = sys.argv[1]
 audio_file = sys.argv[2]
-transcription_file = sys.argv[3]
+referenceion_file = sys.argv[3]
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Use mutagen to get the length of the audio file and free object after finishing
@@ -43,33 +43,17 @@ loading_time = time.process_time() - loading_start
 transcribing_start = time.process_time()
 segments,info = model.transcribe(audio_file)
 transcribing_time = time.process_time() - transcribing_start
-predicted = ""
+hypothesis = ""
 for segment in segments:
-    predicted += segment.text
+    hypothesis += segment.text
 
 # Save the output to output.txt for evaluation
 with open('output.txt','w') as file:
-    file.write(predicted)
+    file.write(hypothesis)
 
 # Read reference transcript from files
-with open(transcription_file, 'r') as file:
-    transcript = file.read()
-
-# Compute Damerau-Levenshtein distance using textdistance library
-# Damerau Levenshtein distance is a string similarity metric used to measure the minimum number of single-character allowed operations 
-# (insertions, deletions, substitutions, transposition)
-# required to transform one string into the other.
-
-# The distance is normalized to be in the range [0,1]
-dl_similarity = td.damerau_levenshtein.normalized_similarity(transcript,predicted)
-
-# Comute Tversky similarity unsing textdistance library
-# Unlike Damerau-Levenshtein this does not account for order of strings
-# Tversky similarity is a string similarity metric used to measure the similarity between two strings.
-# It is a variation of the Jaccard index that allows to control the importance of false positives and false negatives.
-# We are using alpha=0.2 and beta=0.8 to give more importance to false negatives (Word omissions).
-tversky = td.Tversky(ks=(0.2, 0.8))
-Tversky = tversky(transcript,predicted)
+with open(referenceion_file, 'r') as file:
+    reference = file.read()
 
 # Print the resulting statistics from the test
-print("Model: Whisper-"+model_size+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"Damerau-Levenshtein similarity:", dl_similarity, "Tversky similarity:", Tversky)
+print("Model: Whisper-"+model_size+ "Audio Length:", audio_length ,"Model load time:", loading_time ,"Transcription time:",transcribing_time,"WER:", jiwer.wer(reference, hypothesis))

@@ -15,6 +15,6 @@ python3 test_faster_whisper.py "tiny" $AUDIO_FILE $TRANSCRIPT_FILE
 python3 test_faster_whisper.py "base.en" $AUDIO_FILE $TRANSCRIPT_FILE
 python3 test_faster_whisper.py "base" $AUDIO_FILE $TRANSCRIPT_FILE
 python3 test_faster_whisper.py "small.en" $AUDIO_FILE $TRANSCRIPT_FILE
-ython3 test_faster_whisper.py "small" $AUDIO_FILE $TRANSCRIPT_FILE
+python3 test_faster_whisper.py "small" $AUDIO_FILE $TRANSCRIPT_FILE
 
 deactivate
